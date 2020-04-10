@@ -1,0 +1,44 @@
+{
+  "name": "mckaysappts",
+  "version": "1.0.0",
+  "description": "Appointments app for McKay's",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "cd client && npm start",
+    "dev": "concurrently -n 'server,client' -c 'green,blue' \"nodemon server.js\" \"npm run client\"",
+    "build": "cd client && npm run build",
+    "install-client": "cd client && npm install",
+    "heroku-postbuild": "npm run install-client && npm run build",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LuosRestil/apptSolution.git"
+  },
+  "author": "Brian Smith",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LuosRestil/apptSolution/issues"
+  },
+  "homepage": "https://github.com/LuosRestil/apptSolution#readme",
+  "dependencies": {
+    "bcrypt": "^4.0.1",
+    "concurrently": "^5.1.0",
+    "cookie-session": "^1.4.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.21.3",
+    "mongoose": "^5.9.5",
+    "nodemailer": "^6.4.6",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "react-router-dom": "^5.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  },
+  "engines": {
+    "node": "12.13.0"
+  }
+}

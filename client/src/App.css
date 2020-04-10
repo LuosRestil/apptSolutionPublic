@@ -1,0 +1,97 @@
+.App {
+  text-align: center;
+}
+
+.navbar-brand {
+  font-family: "Poppins", sans-serif;
+  font-size: 2rem;
+}
+
+.logo-primary {
+  margin-bottom: 0px;
+  margin-top: -15px;
+}
+
+.logo-secondary {
+  font-size: 1.5rem;
+  margin-top: -8px;
+  margin-bottom: -10px;
+  font-family: "Great Vibes", cursive;
+}
+
+.username {
+  color: white;
+  margin-bottom: 0px;
+  font-weight: bold;
+}
+
+.nav-link {
+  color: white !important;
+}
+
+.nav-link:hover {
+  text-decoration: underline;
+}
+
+form {
+  width: 80%;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.option-full {
+  color: gray;
+}
+
+.btn-link {
+  color: white;
+}
+
+.btn-link:hover {
+  color: white;
+}
+
+.dropdown-menu {
+  text-align: center;
+}
+
+.checkin-display-row {
+  display: inline-block;
+}
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+.checkin-icon {
+  cursor: pointer;
+}
+
+td {
+  font-size: 1.5rem;
+}
+
+.request-reset-success {
+  margin-top: 30vh;
+}
+
+.not-found {
+  margin-top: 30vh;
+}
+
+@media (max-width: 600px) {
+  .username {
+    display: none;
+  }
+}
