@@ -19,7 +19,7 @@ const Nav = (props) => {
       </Link>
 
       {props.logged ? (
-        <p className="username mr-3 ml-auto">
+        <p className="username mr-3 ml-auto font-weight-bold">
           Welcome, {props.user.firstName}!
         </p>
       ) : null}
