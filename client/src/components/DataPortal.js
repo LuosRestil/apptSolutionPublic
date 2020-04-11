@@ -14,7 +14,9 @@ const DataPortal = (props) => {
 
   useEffect(() => {
     let toDisplay = {};
-    let stores = [...new Set(props.appts.map((appt) => appt.store))];
+    let stores = [
+      ...new Set(props.appts.map((appt) => appt.store)),
+    ].sort((a, b) => (a > b ? 1 : -1));
     for (let store of stores) {
       toDisplay[store] = { booked: 0, total: 0 };
     }
