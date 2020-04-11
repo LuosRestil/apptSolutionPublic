@@ -410,7 +410,7 @@ router.post("/resetRequest", (req, res) => {
             from: process.env.EMAIL,
             subject: "Password Reset Request",
             text:
-              "You are receiving this email from McKay's By Appointment because you have requested a password reset.\n\n" +
+              "You are receiving this email from McCoy's By Appointment because you have requested a password reset.\n\n" +
               "Please click on the following link, or copy it and paste it into your browser, to complete the process:\n\n" +
               `${req.protocol}` +
               "://" +
