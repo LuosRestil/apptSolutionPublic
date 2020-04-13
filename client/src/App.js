@@ -31,11 +31,8 @@ function App() {
       .then((response) => response.json())
       .then((json) => {
         if (json.error) {
-          console.log("No user found.");
           setLogged(false);
         } else {
-          console.log("user found");
-          console.log(json);
           setUser(json);
         }
       });
