@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 const Nav = (props) => {
   const logout = () => {
     fetch("/api/logout").then(() => {
-      window.localStorage.removeItem("ma_id");
       props.setLogged(false);
     });
   };
