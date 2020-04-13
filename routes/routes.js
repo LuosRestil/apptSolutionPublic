@@ -200,6 +200,7 @@ router.post("/makeAppt", ensureAuth, (req, res) => {
                   let hr = req.body.hr;
                   let min = req.body.min;
                   let ampm = "AM";
+                  let day = req.body.day;
                   if (req.body.hr > 11) {
                     ampm = "PM";
                   }
@@ -209,8 +210,24 @@ router.post("/makeAppt", ensureAuth, (req, res) => {
                   if (min == 0) {
                     min = "00";
                   }
-                  return res.send({
-                    msg: `Your appointment for ${month} ${req.body.day} at ${hr}:${min} ${ampm} has been set!`,
+
+                  let mailOptions = {
+                    to: req.user.email,
+                    from: "McCoy's By Appointment",
+                    subject: "Appointment Confirmation",
+                    text:
+                      "Thank you for making an appointment with McCoy's By Appointment! If this was a production application, all your instructions for how to proceed on the day of your visit would be in this email. All that stuff is determined by management, so until then, you get this! Stay safe out there.\n\n~McCoy's",
+                  };
+                  transporter.sendMail(mailOptions, (err, info) => {
+                    if (err) {
+                      console.log(err);
+                      return res.send(err);
+                    } else {
+                      console.log("Email sent: " + info.response);
+                      return res.send({
+                        msg: `Your appointment for ${month} ${day} at ${hr}:${min} ${ampm} has been set!`,
+                      });
+                    }
                   });
                 }
               }
@@ -357,27 +374,80 @@ router.post("/toggleCheckin", ensureAuth, (req, res) => {
 
 router.post("/adminCancelAppt", ensureAuth, (req, res) => {
   if (req.user.role === "admin") {
-    Appt.findOneAndUpdate(
-      {
-        "customers._id": req.body.customer._id,
-      },
-      {
-        $pull: { customers: { _id: req.body.customer._id } },
-        $push: { cancellations: req.body.customer.customer._id },
-      },
-      { new: true }
-    )
+    let userEmail;
+    Appt.findOne({ "customers._id": req.body.customer._id })
       .populate("customers.customer")
       .exec((err, data) => {
         if (err) {
           return res.send(err);
-        } else {
-          data.customers.forEach((customer) => {
-            customer.customer.password = "[redacted]";
-          });
-          return res.send(data);
         }
+        for (i = 0; i < data.customers.length; i++) {
+          if (data.customers[i]._id == req.body.customer._id) {
+            userEmail = data.customers[i].customer.email;
+            data.customers.splice(i, 1);
+          }
+        }
+        data.save((err, docs) => {
+          if (err) {
+            return res.send(err);
+          } else {
+            docs.customers.forEach((customer) => {
+              customer.customer.password = "[redacted]";
+            });
+            // send email, then res.send(docs)
+            let month = months[docs.month];
+            let day = docs.day;
+            let hr = docs.hr;
+            let min = docs.min;
+            let ampm = "AM";
+            if (docs.min === 0) {
+              min = "00";
+            }
+            if (docs.hr > 11) {
+              ampm = "PM";
+            }
+            if (docs.hr > 12) {
+              hr = docs.hr - 12;
+            }
+            let mailOptions = {
+              to: userEmail,
+              from: "McCoy's By Appointment",
+              subject: "Appointment Cancellation",
+              text: `You are receiving this email because your McCoy's appointment for ${month} ${day} at ${hr}:${min} ${ampm} in ${docs.store} has been cancelled by an administrator. If you requested this, or if your appointment time has already passed, you may ignore this message. If you feel your appointment was canceled in error, please get in touch with us at whatever the place would be if this was a production application. \n\n~McCoy's`,
+            };
+            transporter.sendMail(mailOptions, (err, info) => {
+              if (err) {
+                console.log(err);
+                return res.send(err);
+              } else {
+                console.log("Email sent: " + info.response);
+                return res.send(docs);
+              }
+            });
+          }
+        });
       });
+    // Appt.findOneAndUpdate(
+    //   {
+    //     "customers._id": req.body.customer._id,
+    //   },
+    //   {
+    //     $pull: { customers: { _id: req.body.customer._id } },
+    //     $push: { cancellations: req.body.customer.customer._id },
+    //   },
+    //   { new: true }
+    // )
+    //   .populate("customers.customer")
+    //   .exec((err, data) => {
+    //     if (err) {
+    //       return res.send(err);
+    //     } else {
+    //       data.customers.forEach((customer) => {
+    //         customer.customer.password = "[redacted]";
+    //       });
+    //       return res.send(data);
+    //     }
+    //   });
   } else {
     return res.status(401);
   }
@@ -407,7 +477,7 @@ router.post("/resetRequest", (req, res) => {
           });
           let mailOptions = {
             to: docs.email,
-            from: process.env.EMAIL,
+            from: "McCoy's By Appointment",
             subject: "Password Reset Request",
             text:
               "You are receiving this email from McCoy's By Appointment because you have requested a password reset.\n\n" +
