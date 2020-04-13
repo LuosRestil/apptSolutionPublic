@@ -387,7 +387,6 @@ const DataPortal = (props) => {
             <tbody>
               {Object.keys(displayData).map((key) => {
                 if (lastFilterField == "store") {
-                  console.log(displayData[key.booked]);
                   return (
                     <tr
                       key={key}
