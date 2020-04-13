@@ -24,7 +24,7 @@ function App() {
   useEffect(() => {
     getUser();
     getAppts();
-  }, []);
+  }, [logged]);
 
   const getUser = () => {
     fetch("/api/getUser")
