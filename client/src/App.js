@@ -17,7 +17,6 @@ import "./App.css";
 
 function App() {
   const customerLimit = 9;
-
   let [logged, setLogged] = useState(true);
   let [user, setUser] = useState({});
   let [appts, setAppts] = useState([]);
@@ -25,16 +24,20 @@ function App() {
   useEffect(() => {
     getUser();
     getAppts();
-    if (!window.localStorage.getItem("ma_id")) {
-      setLogged(false);
-    }
-  }, [logged]);
+  }, []);
 
   const getUser = () => {
     fetch("/api/getUser")
       .then((response) => response.json())
       .then((json) => {
-        setUser(json);
+        if (json.error) {
+          console.log("No user found.");
+          setLogged(false);
+        } else {
+          console.log("user found");
+          console.log(json);
+          setUser(json);
+        }
       });
   };
 

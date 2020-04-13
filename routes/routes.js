@@ -40,7 +40,7 @@ const ensureAuth = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  return res.send({ error: "Unauthorized" });
+  return res.send({ error: "User not authenticated." });
 };
 
 router.post("/register", (req, res) => {
