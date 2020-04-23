@@ -427,27 +427,6 @@ router.post("/adminCancelAppt", ensureAuth, (req, res) => {
           }
         });
       });
-    // Appt.findOneAndUpdate(
-    //   {
-    //     "customers._id": req.body.customer._id,
-    //   },
-    //   {
-    //     $pull: { customers: { _id: req.body.customer._id } },
-    //     $push: { cancellations: req.body.customer.customer._id },
-    //   },
-    //   { new: true }
-    // )
-    //   .populate("customers.customer")
-    //   .exec((err, data) => {
-    //     if (err) {
-    //       return res.send(err);
-    //     } else {
-    //       data.customers.forEach((customer) => {
-    //         customer.customer.password = "[redacted]";
-    //       });
-    //       return res.send(data);
-    //     }
-    //   });
   } else {
     return res.status(401);
   }

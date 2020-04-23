@@ -13,7 +13,6 @@ function EmailResetPass(props) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(props.match.params.token);
     let options = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
