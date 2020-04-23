@@ -44,6 +44,9 @@ const ensureAuth = (req, res, next) => {
 };
 
 router.post("/register", (req, res) => {
+  if (!req.body.validPass) {
+    return res.send({ error: "Password requirements not met." });
+  }
   if (req.body.password !== req.body.confirmPassword) {
     return res.send({
       error: "Password confirmation does not match password.",
@@ -560,6 +563,9 @@ router.post("/updateUserInfo", ensureAuth, (req, res) => {
       });
     } else if (req.body.option === "newPassword") {
       // perform checks, update password
+      if (!req.body.validPass) {
+        return res.send({ error: "Password requirements not met." });
+      }
       if (req.body.newPassword !== req.body.confirmNewPassword) {
         return res.send({
           error: "New password confirmation does not match new password.",
@@ -585,6 +591,9 @@ router.post("/updateUserInfo", ensureAuth, (req, res) => {
 
 router.post("/emailResetPass", (req, res) => {
   // check token, reset user pass
+  if (!req.body.validPass) {
+    return res.send({ error: "Password requirements not met." });
+  }
   if (req.body.password !== req.body.confirmPassword) {
     return res.send({
       error: "Password confirmation does not match password.",

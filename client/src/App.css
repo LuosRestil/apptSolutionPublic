@@ -90,6 +90,17 @@ td {
   margin-top: 30vh;
 }
 
+.pw-reqs {
+  text-align: left;
+  width: 13rem;
+}
+
+.pw-reqs-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @media (max-width: 600px) {
   .username {
     display: none;
