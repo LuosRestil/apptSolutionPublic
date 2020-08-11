@@ -8,6 +8,11 @@ const UserSchema = new Schema({
   password: { type: String, required: true },
   phone: { type: String, unique: true, sparse: true },
   // role will either be user or admin
+  // *********************************************************************************
+  // *********************************************************************************
+  // TODO change role to boolean, i.e. admin: true/false
+  // *********************************************************************************
+  // *********************************************************************************
   role: { type: String, required: true, default: "user" },
 });
 
