@@ -258,13 +258,5 @@ Appt.collection.insertMany(appts, (err, docs) => {
   } else {
     console.log("Database populated.");
     mongoose.connection.close();
-    // Appt.find({}, (err, docs) => {
-    //   if (err) {
-    //     console.log(err);
-    //   } else {
-    //     console.log("Database populated.");
-    //     mongoose.connection.close();
-    //   }
-    // });
   }
 });
