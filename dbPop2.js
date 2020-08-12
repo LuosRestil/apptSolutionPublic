@@ -27,6 +27,7 @@ const monthLengths = {
   11: 31,
 };
 
+// Sun. 11 - 7, Mon.-Thur. 9 - 9, Fri.-Sat. 9 - 10
 const regularHrs = {
   0: { startHr: 11, endHr: 18 },
   1: { startHr: 9, endHr: 20 },
@@ -36,6 +37,7 @@ const regularHrs = {
   5: { startHr: 9, endHr: 21 },
   6: { startHr: 9, endHr: 21 },
 };
+// Sun. 11 - 7, Mon.-Sat. 9 - 10
 const summerHrs = {
   0: { startHr: 11, endHr: 18 },
   1: { startHr: 9, endHr: 21 },
@@ -53,9 +55,10 @@ const summerHrsEnd = { month: 8, day: 6 };
 const apptLength = 30;
 const endMin = 60 - apptLength;
 
-const holidays = {
+const holidays = [
   // 9:00 - 5:30
-  newYearsEve: {
+  {
+    name: "newYearsEve",
     month: 12,
     day: 31,
     startHr: 9,
@@ -64,7 +67,8 @@ const holidays = {
     closed: false,
   },
   // 12:00 - 9:00, unless sunday, in which case normal hours of 11:00 - 7:00
-  newYearsDay: {
+  {
+    name: "newYearsDay",
     month: 0,
     day: 1,
     startHr: 12,
@@ -73,7 +77,8 @@ const holidays = {
     closed: false,
   },
   // 12:00 - 6:00
-  easter: {
+  {
+    name: "easter",
     month: 3,
     day: 12,
     startHr: 12,
@@ -82,7 +87,8 @@ const holidays = {
     closed: false,
   },
   // 12:00 - 6:00
-  july4th: {
+  {
+    name: "july4th",
     month: 6,
     day: 4,
     startHr: 12,
@@ -92,7 +98,8 @@ const holidays = {
   },
   // closed
   // CHANGE THIS EACH YEAR
-  thanksgiving: {
+  {
+    name: "thanksgiving",
     month: 10,
     day: 27,
     startHr: null,
@@ -101,7 +108,8 @@ const holidays = {
     closed: true,
   },
   // 9:00 - 5:30
-  christmasEve: {
+  {
+    name: "christmasEve",
     month: 11,
     day: 24,
     startHr: 9,
@@ -110,7 +118,8 @@ const holidays = {
     closed: false,
   },
   // closed
-  christmasDay: {
+  {
+    name: "christmasDay",
     month: 11,
     day: 25,
     startHr: null,
@@ -118,7 +127,7 @@ const holidays = {
     endMin: null,
     closed: true,
   },
-};
+];
 
 const dayStrings = [
   "Sunday",
@@ -162,12 +171,12 @@ for (let store of stores) {
 
     // Create appt date object
     let apptDate = new Date(year, month, day, hr, min);
-    let dotw = dayStrings[apptDate.getDay()];
+    let dotw = apptDate.getDay();
 
     let isHoliday = false;
     let currentHoliday;
     // Determine holiday status
-    for (let holiday in holidays) {
+    for (let holiday of holidays) {
       if (holiday.month === month && holiday.day === day) {
         isHoliday = true;
         currentHoliday = holiday;
@@ -175,10 +184,9 @@ for (let store of stores) {
     }
 
     let isSummer =
-      month >= summerHrsStart.month &&
-      month <= summerHrsEnd.month &&
-      day >= summerHrsStart.day &&
-      day <= summerHrsEnd.month;
+      (month === summerHrsStart.month && day >= summerHrsStart.day) ||
+      (month > summerHrsStart.month && month < summerHrsEnd.month) ||
+      (month === summerHrsEnd.month && day <= summerHrsEnd.day);
 
     if (isHoliday) {
       // Set today times by holiday
@@ -193,7 +201,7 @@ for (let store of stores) {
         hr = 1;
         min = 0;
         continue;
-      } else if (currentHoliday === "newYearsDay" && dotw === "Sunday") {
+      } else if (currentHoliday.name === "newYearsDay" && dotw === 0) {
         dayStartHr = regularHrs["0"].startHr;
         dayEndHr = regularHrs["0"].endHr;
         dayEndMin = endMin;
@@ -204,13 +212,13 @@ for (let store of stores) {
       }
     } else if (isSummer) {
       // Set today times by summer hours
-      dayStartHr = summerHrs[apptDate.getDay()].startHr;
-      dayEndHr = summerHrs[apptDate.getDay()].endHr;
+      dayStartHr = summerHrs[dotw].startHr;
+      dayEndHr = summerHrs[dotw].endHr;
       dayEndMin = endMin;
     } else {
       // Set today times by regular hours
-      dayStartHr = regularHrs[apptDate.getDay()].startHr;
-      dayEndHr = regularHrs[apptDate.getDay()].endHr;
+      dayStartHr = regularHrs[dotw].startHr;
+      dayEndHr = regularHrs[dotw].endHr;
       dayEndMin = endMin;
     }
 
@@ -253,7 +261,6 @@ for (let store of stores) {
 // Add appointments to database
 Appt.collection.insertMany(appts, (err, docs) => {
   if (err) {
-    console.log("in error handler of insertMany");
     console.log(err);
   } else {
     console.log("Database populated.");
