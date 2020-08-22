@@ -44,6 +44,7 @@ const ensureAuth = (req, res, next) => {
 };
 
 router.post("/register", (req, res) => {
+  console.log("HITTING REGISTER ROUTE");
   if (!req.body.validPass) {
     return res.send({ error: "Password requirements not met." });
   }
@@ -62,15 +63,16 @@ router.post("/register", (req, res) => {
     }
   }
   User.findOne(
-    { $or: [{ email: req.body.email, phone: req.body.phone }] },
+    { $or: [{ email: req.body.email}, {phone: req.body.phone }] },
     (err, docs) => {
       if (err) {
         return res.send(err);
       } else if (docs) {
-        if (docs.phone === phoneDigits) {
+        if (docs.phone === phoneDigits && phoneDigits) {
           return res.send({ error: "That phone number is already in use." });
-        } else if (docs.email === req.body.email)
+        } else if (docs.email === req.body.email) {
           return res.send({ error: "That email is already in use." });
+        } 
       } else {
         const pw_hash = bcrypt.hashSync(req.body.password, 10);
         const newUser = new User({

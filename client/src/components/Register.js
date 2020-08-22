@@ -82,13 +82,16 @@ function Register(props) {
           ) {
             setPassword("");
             setConfirmPassword("");
+            document.getElementById("passwordField").focus();
           } else if (json.error === "That email is already in use.") {
             setEmail("");
+            document.getElementById("emailField").focus();
           } else if (
             json.error === "That phone number is already in use." ||
             json.error === "Phone number must contain 10 or 11 digits."
           ) {
             setPhone("");
+            document.getElementById("phoneField").focus();
           }
         } else if (json.msg) {
           setRedirect({
